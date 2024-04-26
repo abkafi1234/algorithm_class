@@ -1,0 +1,47 @@
+int lcs_recursive(string X, string Y, int m, int n) {
+    if (m == 0 || n == 0)
+        return 0;
+    else if (X[m - 1] == Y[n - 1])
+        return 1 + lcs_recursive(X, Y, m - 1, n - 1);
+    else
+        return max(lcs_recursive(X, Y, m, n - 1), lcs_recursive(X, Y, m - 1, n));
+}
+
+
+//memoization
+
+int memo[101][101]; // Memoization table
+
+int lcs_recursive(string X, string Y, int m, int n) {
+    if (m == 0 || n == 0)
+        return 0;
+
+    // If the value is already computed, return it
+    if (memo[m][n] != -1)
+        return memo[m][n];
+
+    if (X[m - 1] == Y[n - 1])
+        return memo[m][n] = 1 + lcs_recursive(X, Y, m - 1, n - 1);
+    else
+        return memo[m][n] = max(lcs_recursive(X, Y, m, n - 1), lcs_recursive(X, Y, m - 1, n));
+}
+
+//bottom up 
+
+int lcs_bottom_up(string X, string Y, int m, int n) {
+    int dp[m + 1][n + 1];
+
+    // Initialize the dp table
+    for (int i = 0; i <= m; ++i) {
+        for (int j = 0; j <= n; ++j) {
+            if (i == 0 || j == 0)
+                dp[i][j] = 0;
+            else if (X[i - 1] == Y[j - 1])
+                dp[i][j] = 1 + dp[i - 1][j - 1];
+            else
+                dp[i][j] = max(dp[i][j - 1], dp[i - 1][j]);
+        }
+    }
+
+    return dp[m][n];
+}
