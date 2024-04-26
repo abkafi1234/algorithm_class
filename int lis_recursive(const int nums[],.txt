@@ -1,0 +1,69 @@
+int lis_recursive(const int nums[], int size, int prev_index, int current_index) {
+    if (current_index == size) {
+        return 0;
+    }
+
+    int include_current = 0;
+    if (prev_index == -1 || nums[current_index] > nums[prev_index]) {
+        include_current = 1 + lis_recursive(nums, size, current_index, current_index + 1);
+    }
+
+    int without_current = lis_recursive(nums, size, prev_index, current_index + 1);
+
+    return max(include_current, without_current);
+}
+
+//top down
+int memo[MAX_SIZE][MAX_SIZE]; // Memoization table
+
+int lis_recursive(const int nums[], int size, int prev_index, int current_index) {
+    if (current_index == size) {
+        return 0;
+    }
+
+    if (memo[prev_index + 1][current_index] != -1) {
+        return memo[prev_index + 1][current_index];
+    }
+
+    int include_current = 0;
+    if (prev_index == -1 || nums[current_index] > nums[prev_index]) {
+        include_current = 1 + lis_recursive(nums, size, current_index, current_index + 1);
+    }
+
+    int without_current = lis_recursive(nums, size, prev_index, current_index + 1);
+
+    memo[prev_index + 1][current_index] = max(include_current, without_current);
+    return memo[prev_index + 1][current_index];
+}
+
+
+
+
+
+int lis_bottom_up(const int nums[], int size) {
+    int dp[size]; // Dynamic programming table to store LIS lengths
+    
+    // Initialize LIS lengths to 1 for each element
+    for (int i = 0; i < size; ++i) {
+        dp[i] = 1;
+    }
+    
+    // Compute LIS lengths using bottom-up approach
+    for (int i = 1; i < size; ++i) {
+        for (int j = 0; j < i; ++j) {
+            if (nums[i] > nums[j]) {
+                dp[i] = max(dp[i], dp[j] + 1);
+            }
+        }
+    }
+    
+    // Find the maximum LIS length in the table
+    int max_length = 0;
+    for (int i = 0; i < size; ++i) {
+        if (dp[i] > max_length) {
+            max_length = dp[i];
+        }
+    }
+    
+    return max_length;
+}
