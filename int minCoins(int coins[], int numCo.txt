@@ -1,0 +1,56 @@
+int minCoins(int coins[], int numCoins, int amount) {
+    // Base cases:
+    // If the amount is 0, no coins are required
+    if (amount == 0) {
+        return 0;
+    }
+    
+    // Initialize result to a large value
+    int min = INT_MAX;
+
+    // Try every coin denomination and recursively find the minimum number of coins required
+    for (int i = 0; i < numCoins; ++i) {
+        if (coins[i] <= amount) {
+            int subResult = minCoins(coins, numCoins, amount - coins[i]);
+            
+            // Check if the subResult plus one (current coin) is less than the current minimum
+            if (subResult != INT_MAX && subResult + 1 < min) {
+                min = subResult + 1;
+            }
+        }
+    }
+    
+    // Return the minimum number of coins required
+    return min;
+}
+
+
+
+
+int minCoins(int coins[], int numCoins, int amount) {
+    // Create a table to store the minimum number of coins required for each amount
+    int dp[amount + 1];
+    
+    // Initialize the table with a large value (INT_MAX)
+    for (int i = 0; i <= amount; ++i) {
+        dp[i] = INT_MAX;
+    }
+    
+    // Base case: No coins are required to make change for amount 0
+    dp[0] = 0;
+    
+    // Compute the minimum number of coins required for each amount from 1 to amount
+    for (int i = 1; i <= amount; ++i) {
+        for (int j = 0; j < numCoins; ++j) {
+            if (coins[j] <= i) {
+                int subResult = dp[i - coins[j]];
+                if (subResult != INT_MAX && subResult + 1 < dp[i]) {
+                    dp[i] = subResult + 1;
+                }
+            }
+        }
+    }
+    
+    // Return the minimum number of coins required for the given amount
+    return dp[amount];
+}
